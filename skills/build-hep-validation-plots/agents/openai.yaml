@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build HEP Validation Plots"
+  short_description: "Create checked HEP plots with uncertainties"
+  default_prompt: "Use $build-hep-validation-plots to create consistent validation plots and machine-readable sidecars."

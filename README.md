@@ -25,6 +25,7 @@ commitments remain under `Pending Confirmation` until a user resolves them.
 | CBORG DeepThought provider | Default | Remote structured extraction through an HTTPS OpenAI-compatible endpoint. |
 | Ollama provider | Optional | Local open-weight inference restricted to loopback addresses; performance depends on local hardware. |
 | Heuristic provider | Development fallback | Deterministic, conservative extraction for tests and offline framework checks; not a replacement for semantic review. |
+| HEP validation plots | Current, skill-driven | Produces checked vector PDFs and machine-readable JSON sidecars with propagated statistical uncertainties. |
 | Weekly Beamer deck | Current, skill-driven | Compares consecutive reviewed summaries and adds selected plots or contributor evidence. |
 | Project history | Current, skill-driven | Consolidates reviewed summaries into one longitudinal record per series. |
 | JSON review and HTML dashboard | Transitional | Older `process`/`review`/`approve` workflow retained for compatibility. It is not the recommended path. |
@@ -117,6 +118,19 @@ when supported by the transcript. The generated file begins as `status: draft`.
 Resolve material unchecked items with the user before changing it to
 `status: reviewed` or using its claims in slides and project history.
 
+### Validation plots
+
+Use `build-hep-validation-plots` to produce data/MC overlays, ratio panels, or
+scale-factor figures from histogram or binned analysis outputs. Each result has
+a vector PDF and a machine-readable JSON sidecar containing the bin contents,
+`sumw2` statistical uncertainties, selection, normalization, and provenance.
+The skill checks for empty histograms, invalid values or variances, inconsistent
+binning, undefined derived bins, and missing uncertainty metadata.
+
+The plotting skill owns numerical figure production, not physics diagnosis or
+slide layout. Pass checked PDF/JSON artifacts to `build-weekly-beamer`; use a
+separate HEP QA workflow when a discrepancy needs interpretation.
+
 ### Weekly slides
 
 Use `build-weekly-beamer` after two consecutive summaries are reviewed. Meeting N
@@ -185,6 +199,7 @@ empty, but a later run can recreate them.
 Repository copies under `skills/` are canonical and reviewable:
 
 - `summarize-meeting-markdown` - convert one dated Zoom transcript into reviewed Markdown;
+- `build-hep-validation-plots` - produce checked HEP plots with uncertainties and JSON sidecars;
 - `build-weekly-beamer` - build and verify a differential weekly Beamer deck;
 - `maintain-project-history` - maintain the longitudinal record from reviewed summaries;
 - `maintain-framework-readme` - verify this README against implemented behavior;
@@ -246,8 +261,8 @@ history, documentation, reviews, source code, tests, and configuration.
    then stop the primary Markdown workflow from creating its empty directories.
 2. Enforce exactly one valid filename date token instead of accepting the first
    match when a filename contains multiple `YYYYMMDD` values.
-3. Add CLI commands for weekly-deck and project-history orchestration if those
-   workflows should run without an agent skill.
+3. Add CLI commands for validation-plot, weekly-deck, and project-history
+   orchestration if those workflows should run without an agent skill.
 4. Add provider-quality evaluation fixtures for summary accuracy, ambiguity
    handling, and meeting-to-meeting consistency; current tests validate behavior
    and schemas, not scientific or semantic correctness.
