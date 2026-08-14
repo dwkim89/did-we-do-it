@@ -1,0 +1,4 @@
+interface:
+  display_name: "Hourly Progress Capture"
+  short_description: "Write evidence-based hourly interaction progress reports"
+  default_prompt: "Use $capture-hourly-progress to record the last hour of attempts, failures, retries, and lessons."

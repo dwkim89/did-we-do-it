@@ -1,0 +1,4 @@
+interface:
+  display_name: "Project History Maintainer"
+  short_description: "Consolidate reviewed meetings into project history"
+  default_prompt: "Use $maintain-project-history to update the project-wide history from reviewed meeting summaries."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Daily Progress Consolidation"
+  short_description: "Consolidate hourly reports into one daily history"
+  default_prompt: "Use $consolidate-daily-progress to summarize today's hourly reports for the next session."

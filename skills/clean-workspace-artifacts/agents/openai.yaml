@@ -1,0 +1,4 @@
+interface:
+  display_name: "Workspace Artifact Cleaner"
+  short_description: "Safely clean caches and disposable test outputs"
+  default_prompt: "Use $clean-workspace-artifacts to preview and clean disposable workspace artifacts after testing."

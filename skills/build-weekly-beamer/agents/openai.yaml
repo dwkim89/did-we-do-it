@@ -1,0 +1,4 @@
+interface:
+  display_name: "Weekly Beamer Builder"
+  short_description: "Build differential-first weekly Beamer decks"
+  default_prompt: "Use $build-weekly-beamer to compare two consecutive reviewed meetings and build a full weekly deck that tracks prior commitments and new evidence."

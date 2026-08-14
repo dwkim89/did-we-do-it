@@ -1,0 +1,4 @@
+interface:
+  display_name: "Skill Orthogonality Audit"
+  short_description: "Detect scope overlap before skills are added or changed"
+  default_prompt: "Use $audit-skill-orthogonality to compare proposed and installed skills before installation."

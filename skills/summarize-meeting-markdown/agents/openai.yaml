@@ -1,0 +1,4 @@
+interface:
+  display_name: "Meeting Markdown Summary"
+  short_description: "Turn raw meeting transcripts into dated structured Markdown"
+  default_prompt: "Use $summarize-meeting-markdown to turn this raw Zoom transcript into a concise dated meeting summary."
