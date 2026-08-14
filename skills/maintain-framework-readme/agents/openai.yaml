@@ -1,0 +1,4 @@
+interface:
+  display_name: "Maintain Framework README"
+  short_description: "Audit and update framework documentation"
+  default_prompt: "Use $maintain-framework-readme to verify and update README.md against the current framework."

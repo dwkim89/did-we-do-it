@@ -1,16 +1,36 @@
 # DidWeDoIt
 
-DidWeDoIt turns Zoom-format plain-text meeting transcripts into inspectable JSON,
-a Markdown report, and a self-contained HTML dashboard. It keeps continuity with
-the previous meeting while refusing to commit vague extracted items until a person
-reviews them.
+DidWeDoIt turns dated Zoom-format text transcripts into concise, reviewable
+meeting summaries. Reviewed summaries then support weekly progress slides and a
+longitudinal project history.
 
-This repository contains a compact deterministic core plus a remote CBORG
-DeepThought adapter. An optional Ollama adapter remains available for local
-open-weight models, and the offline heuristic extractor is a conservative fallback
-and test path.
+The primary workflow is deliberately simple:
 
-## Input contract
+```text
+transcript TXT
+    -> reviewed Markdown summary
+    -> weekly Beamer progress deck
+    -> longitudinal project history
+```
+
+The framework keeps uncertainty visible. Unclear answers, owners, decisions, and
+commitments remain under `Pending Confirmation` until a user resolves them.
+
+## Current framework
+
+| Capability | Status | Current role |
+|---|---|---|
+| Zoom TXT ingestion and filename dates | Current | Parses UTF-8 Zoom transcripts and takes the canonical meeting date from the first isolated `YYYYMMDD` token in the filename. |
+| Markdown meeting summary | Primary | `didwedoit summarize` writes the editable record used by later skills. |
+| CBORG DeepThought provider | Default | Remote structured extraction through an HTTPS OpenAI-compatible endpoint. |
+| Ollama provider | Optional | Local open-weight inference restricted to loopback addresses; performance depends on local hardware. |
+| Heuristic provider | Development fallback | Deterministic, conservative extraction for tests and offline framework checks; not a replacement for semantic review. |
+| Weekly Beamer deck | Current, skill-driven | Compares consecutive reviewed summaries and adds selected plots or contributor evidence. |
+| Project history | Current, skill-driven | Consolidates reviewed summaries into one longitudinal record per series. |
+| JSON review and HTML dashboard | Transitional | Older `process`/`review`/`approve` workflow retained for compatibility. It is not the recommended path. |
+| Hourly and daily progress reports | Current, active-session skills | Run during an active agent session; no background scheduler is included. |
+
+## Input and privacy contract
 
 The only required input is a UTF-8 `.txt` file exported in the Zoom layout:
 
@@ -19,11 +39,32 @@ The only required input is a UTF-8 `.txt` file exported in the Zoom layout:
 Person Name: Spoken text.
 ```
 
-The filename must contain the meeting date as `YYYYMMDD`, for example
-`20260115_Weekly.txt`. Dates mentioned inside a discussion may refer to experiments,
-deadlines, or previous meetings, so they are not used as the canonical meeting date.
+The filename must contain a usable meeting date as an isolated `YYYYMMDD` token,
+for example `20260115_Weekly.txt`. The current parser uses the first matching
+token. Dates mentioned during discussion may describe deadlines or earlier
+meetings, so transcript content is not used as the canonical date.
 
-## Quick start
+Private runtime artifacts are excluded from Git by default:
+
+```text
+transcripts/       raw meeting inputs
+summaries/         reviewed meeting records
+slides/            slide source, evidence, and rendered PDFs
+project-history/   longitudinal project records
+docs/              interaction and audit reports
+meetings/          legacy approved JSON/HTML records
+reviews/           legacy pending review bundles
+state/             runtime state
+didwedoit.toml      local provider configuration
+```
+
+Git exclusions do not change provider privacy. CBORG sends transcript content to
+the configured remote endpoint. Ollama is restricted to `localhost`,
+`127.0.0.1`, or `::1`. The heuristic provider makes no network requests.
+
+## Installation
+
+DidWeDoIt requires Python 3.11 or newer.
 
 ```bash
 python3 -m venv .venv
@@ -33,147 +74,199 @@ python3 -m pip install -e '.[test]'
 didwedoit init
 ```
 
-`init` writes a readable `didwedoit.toml`. The default provider is the remote
-CBORG DeepThought model, configured through an HTTPS OpenAI-compatible endpoint.
-Keep the API token in the environment rather than this repository:
+`init` writes a local `didwedoit.toml`. The default analysis configuration is:
 
 ```toml
 [analysis]
 provider = "cborg"
 model = "cborg-deepthought"
 chunk_chars = 40000
+context_tokens = 16384
 ```
 
-Then verify and produce the simple, editable meeting summary:
+For CBORG, set the endpoint and credential in the environment rather than in Git:
 
 ```bash
+export CBORG_BASE_URL="https://your-cborg-endpoint.example/v1"
+export CBORG_API_KEY="your-token"
 didwedoit doctor
-didwedoit summarize transcripts/20260115_Weekly.txt --series research-project
 ```
 
-This writes `summaries/20260115_research-project.md` with Key outcomes, Decisions made,
-Open Questions, Pending Confirmation, and Action items. Optional contributor,
-risk, and topic sections are added only when useful. The transcript is sent to the
-configured remote provider; the result is validated locally. Ambiguous items stay
-as unchecked Markdown entries for user confirmation, so routine review does not
-require editing JSON.
+`OPENAI_BASE_URL` may be used instead of `CBORG_BASE_URL`. The implementation
+requires HTTPS and suppresses provider response bodies from HTTP errors.
 
-The earlier canonical-history workflow is still available through `process`. For
-a local open-weight model, configure `provider = "ollama"` and its exact model name.
-The Ollama adapter accepts only `localhost` or `127.0.0.1`, so transcript content
-does not leave the machine on that path.
+## Primary workflow
 
-To exercise the framework before installing a model:
+Generate one dated Markdown summary:
 
 ```bash
-didwedoit process transcripts/20260115_Weekly.txt --series research-project --provider heuristic
+didwedoit summarize transcripts/20260115_Weekly.txt \
+  --series research-project
 ```
 
-If extraction is uncertain, `process` writes a JSON bundle under `reviews/` and
-does not modify `meetings/`. In an interactive terminal it offers to review now.
-For every vague item choose:
+The output is `summaries/20260115_research-project.md` with these stable sections:
 
-- `a` to confirm it;
-- `e` to correct it and confirm it; or
-- `d` to discard it.
+- Key outcomes
+- Decisions made
+- Open Questions
+- Pending Confirmation
+- Action items
 
-You can resume later:
+Contributor progress, topics, risks, blockers, or reasoning are included only
+when supported by the transcript. The generated file begins as `status: draft`.
+Resolve material unchecked items with the user before changing it to
+`status: reviewed` or using its claims in slides and project history.
 
-```bash
-didwedoit review reviews/2026-08-05_<checksum>.json
-```
+### Weekly slides
 
-Advanced users may edit that JSON directly. `didwedoit approve FILE` refuses to
-commit while any item still has `needs_review: true`.
-
-After approval, outputs are intentionally few and editable:
+Use `build-weekly-beamer` after two consecutive summaries are reviewed. Meeting N
+provides prior requests and action items; meeting N+1 provides evidence of what
+changed. The skill writes:
 
 ```text
-meetings/research-project/2026-01-15_<meeting-id>/
-├── meeting.json
-├── report.md
-└── dashboard.html
+slides/YYYYMMDD_<series>/weekly-update.tex
+slides/YYYYMMDD_<series>/weekly-update.pdf
 ```
 
-`meeting.json` is canonical. Reports can always be regenerated from it. Transcript
-content is not copied and no telemetry exists. Ollama traffic is restricted to the
-configured loopback address; the heuristic fallback makes no network requests.
+The deck is a 6-10 frame progress story, not a one-page summary. It tracks prior
+actions with the exact states `done`, `in progress`, `blocked`, `not discussed`,
+or `needs confirmation`. Supplied plots, JSON, or contributor slides are selected
+for decision relevance, with at most two plots per frame.
 
-## Commands
+### Project history
+
+Use `maintain-project-history` after summaries are reviewed. It reads only dated
+meeting summaries and updates:
+
+```text
+project-history/<series>.md
+```
+
+Raw transcripts and agent-session reports are not sources for project history.
+
+## Implemented CLI commands
 
 ```text
 didwedoit init [WORKSPACE]
 didwedoit summarize TRANSCRIPT.txt [--series NAME] [--workspace DIR]
+                    [--provider NAME] [--model NAME] [--force]
+didwedoit doctor [--workspace DIR] [--provider NAME] [--model NAME] [--json]
+
+# Transitional canonical JSON/HTML workflow
 didwedoit process TRANSCRIPT.txt [--series NAME] [--workspace DIR]
-didwedoit doctor [--provider NAME] [--model NAME] [--json]
+                  [--provider NAME] [--model NAME]
 didwedoit review REVIEW.json [--workspace DIR]
 didwedoit approve REVIEW.json [--workspace DIR]
-didwedoit list [--series NAME] [--json]
-didwedoit show MEETING_ID [--json]
+didwedoit list [--series NAME] [--workspace DIR] [--json]
+didwedoit show MEETING_ID [--workspace DIR] [--json]
 ```
 
-## End-to-end workflow
+Valid provider names are `cborg`, `ollama`, and `heuristic`.
 
-The project uses four plain, inspectable artifact stages:
+## Transitional workflow needing revision
 
-```text
-transcripts/YYYYMMDD_*.txt
-        |
-        v
-summaries/YYYYMMDD_<series>.md      reviewed meeting record
-        |                    \
-        v                     v
-slides/YYYYMMDD_<series>/weekly-update.tex  project-history/<series>.md
-        |
-        v
-slides/YYYYMMDD_<series>/weekly-update.pdf
+The older `process` command builds canonical `meeting.json`, `report.md`, and a
+self-contained `dashboard.html`. Ambiguous results first enter `reviews/` as JSON
+plus an HTML preview and require `review` or `approve` before they enter
+`meetings/`.
+
+This path is still implemented and tested, but the project now uses editable
+Markdown summaries as the human review surface. Unless JSON/HTML canonical state
+is needed, prefer `summarize` and the summary/slide/history skills.
+
+One implementation detail remains transitional: `init`, `summarize`, and
+`process` share the same workspace initializer, so they currently create empty
+`meetings/`, `reviews/`, and `state/` directories even when only the Markdown
+workflow is used. These directories are ignored by Git and may be removed when
+empty, but a later run can recreate them.
+
+## Repository skills
+
+Repository copies under `skills/` are canonical and reviewable:
+
+- `summarize-meeting-markdown` - convert one dated Zoom transcript into reviewed Markdown;
+- `build-weekly-beamer` - build and verify a differential weekly Beamer deck;
+- `maintain-project-history` - maintain the longitudinal record from reviewed summaries;
+- `maintain-framework-readme` - verify this README against implemented behavior;
+- `clean-workspace-artifacts` - preview and remove allowlisted disposable artifacts;
+- `capture-hourly-progress` - record evidence from a long active work interval;
+- `consolidate-daily-progress` - consolidate one day of hourly reports;
+- `audit-skill-orthogonality` - prevent competing skill ownership and triggers.
+
+Installed Codex copies normally live under `~/.codex/skills/`. Skills execute
+during active agent turns. Unattended wall-clock execution requires a separate
+scheduler.
+
+## Testing and maintenance
+
+After an editable installation:
+
+```bash
+python3 -m pytest -q
 ```
 
-1. Run `summarize` and resolve every material item under Pending Confirmation.
-2. Compare two consecutive reviewed summaries. Meeting N supplies the actions and questions; meeting N+1 supplies evidence for `done`, `in progress`, `blocked`, `not discussed`, or `needs confirmation`.
-3. Build the meeting N+1 weekly deck with the differential, contributor evidence, reasoning, new actions for N+2, and a decision checkpoint. A one-frame status page is not a weekly deck.
-4. Add user-supplied plots, JSON results, or contributor material, then compile with LuaLaTeX.
-5. Validate the PDF with qpdf, render every page with Ghostscript or Poppler, verify embedded fonts, and inspect every preview.
-6. Update `project-history/<series>.md` from reviewed summaries for a concise longitudinal record.
+Without installing the package first:
 
-Beamer already produces vector PDF. LuaLaTeX improves font handling; qpdf and
-Ghostscript improve validation rather than replacing Beamer. Prefer vector PDF
-plots, with high-resolution PNG only when vector output is unavailable.
+```bash
+PYTHONPATH=src python3 -m pytest -q
+```
 
-## Design boundaries
+The current suite covers transcript ingestion, dated summary structure, CBORG and
+Ollama adapters, historical reconciliation, HTML escaping, and cleanup safety.
 
-- The source file is never modified.
-- Evidence retains original physical line numbers, timestamps, speaker, and a short excerpt.
-- Unassigned work stays unassigned.
-- A prior action absent from the current meeting is `not discussed`, never completed.
-- Historical fuzzy matches below the automatic threshold require human review.
-- If ownership, status, evidence, or an artifact choice is materially unclear, ask the user before treating it as confirmed.
-- HTML escapes transcript-derived content and loads no remote assets.
-- JSON files and a compact Python package are preferred over a database and deep directory hierarchy.
+Review this README against the implementation:
 
-## Skills
+```bash
+python3 skills/maintain-framework-readme/scripts/readme_inventory.py --root .
+```
 
-The editable source skills under `skills/` have intentionally separate ownership:
-
-- `summarize-meeting-markdown` turns one dated Zoom TXT transcript into reviewable Markdown through the configured remote LLM;
-- `build-weekly-beamer` compares two consecutive reviewed summaries and turns their action/status differential plus supplied evidence into a multi-frame Beamer deck and verified PDF;
-- `maintain-project-history` consolidates reviewed meeting summaries into one longitudinal record per meeting series;
-- `clean-workspace-artifacts` previews and removes allowlisted caches, temporary render files, and optional build outputs after testing;
-- `capture-hourly-progress` writes `docs/YYYYMMDD_HH_TZ_brief-description.md` after roughly one hour of observable active work;
-- `consolidate-daily-progress` reads one local day's hourly reports and writes `docs/YYYYMMDD_daily-summary_brief-description.md`;
-- `audit-skill-orthogonality` checks new or changed skills against repository and installed skills before installation.
-
-Codex copies are installed under `~/.codex/skills/`. Repository copies remain canonical so changes can be reviewed and versioned. Skills run during active agent turns; exact unattended wall-clock execution requires a separate scheduler.
-
-Cleanup is dry-run-first:
+Cleanup is dry-run-first. Apply exactly the selection that was previewed:
 
 ```bash
 python3 skills/clean-workspace-artifacts/scripts/clean_workspace.py --root .
-python3 skills/clean-workspace-artifacts/scripts/clean_workspace.py --root . --include-build-output --apply
+python3 skills/clean-workspace-artifacts/scripts/clean_workspace.py --root . --apply
 ```
 
-The cleaner never selects transcripts, summaries, slides, final PDFs, project history, docs, reviews, source, tests, or configuration.
+To include reproducible package builds, preview and apply with the same additional
+flag:
 
-See `MEETING_INTELLIGENCE_PRODUCT_TECHNICAL_SPEC.md` for the long-term product
-contract. Richer semantic consolidation, model evaluation, status classification,
-and migration tooling remain later milestones.
+```bash
+python3 skills/clean-workspace-artifacts/scripts/clean_workspace.py \
+  --root . --include-build-output
+python3 skills/clean-workspace-artifacts/scripts/clean_workspace.py \
+  --root . --include-build-output --apply
+```
+
+The cleaner protects transcripts, summaries, slide source, final PDFs, project
+history, documentation, reviews, source code, tests, and configuration.
+
+## Known limitations and possible improvements
+
+1. Decide whether to remove or migrate the transitional JSON/HTML review path,
+   then stop the primary Markdown workflow from creating its empty directories.
+2. Enforce exactly one valid filename date token instead of accepting the first
+   match when a filename contains multiple `YYYYMMDD` values.
+3. Add CLI commands for weekly-deck and project-history orchestration if those
+   workflows should run without an agent skill.
+4. Add provider-quality evaluation fixtures for summary accuracy, ambiguity
+   handling, and meeting-to-meeting consistency; current tests validate behavior
+   and schemas, not scientific or semantic correctness.
+5. Add continuous integration for tests, README inventory, formatting, and secret
+   scanning. The repository currently relies on local validation.
+6. Add an optional scheduler only if unattended hourly/daily reporting is needed;
+   keep scheduled execution separate from skill definitions.
+7. Add a migration command if existing canonical `meetings/` records need to
+   become reviewed Markdown summaries.
+
+See `MEETING_INTELLIGENCE_PRODUCT_TECHNICAL_SPEC.md` for the longer-term product
+contract. Specification text is not evidence that a feature is implemented.
+
+## Design boundaries
+
+- Never modify the source transcript.
+- Preserve original line numbers, timestamps, speaker, and short evidence excerpts.
+- Keep unassigned work unassigned.
+- Treat silence as `not discussed`, never as completion.
+- Ask the user when ownership, status, evidence, or interpretation is unclear.
+- Escape transcript-derived HTML and load no remote dashboard assets.
+- Prefer compact files and shallow, inspectable directories over a database.
