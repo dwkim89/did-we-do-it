@@ -26,7 +26,7 @@ commitments remain under `Pending Confirmation` until a user resolves them.
 | Ollama provider | Optional | Local open-weight inference restricted to loopback addresses; performance depends on local hardware. |
 | Heuristic provider | Development fallback | Deterministic, conservative extraction for tests and offline framework checks; not a replacement for semantic review. |
 | HEP validation plots | Current, skill-driven | Produces checked vector PDFs and machine-readable JSON sidecars with propagated statistical uncertainties. |
-| Weekly Beamer deck | Current, skill-driven | Compares consecutive reviewed summaries and adds selected plots or contributor evidence. |
+| Weekly Beamer deck | Current, skill-driven | Builds an N+1 preparation deck from one reviewed summary, then a final differential from two consecutive reviewed summaries. |
 | Project history | Current, skill-driven | Consolidates reviewed summaries into one longitudinal record per series. |
 | JSON review and HTML dashboard | Transitional | Older `process`/`review`/`approve` workflow retained for compatibility. It is not the recommended path. |
 | Hourly and daily progress reports | Current, active-session skills | Run during an active agent session; no background scheduler is included. |
@@ -228,7 +228,7 @@ Repository copies under `skills/` are canonical and reviewable:
 
 - `summarize-meeting-markdown` - convert one dated Zoom transcript into reviewed Markdown;
 - `build-hep-validation-plots` - produce checked HEP plots with uncertainties and JSON sidecars;
-- `build-weekly-beamer` - build and verify a differential weekly Beamer deck;
+- `build-weekly-beamer` - prepare or update a Berkeley-profile weekly Beamer deck and verify its PDF;
 - `maintain-project-history` - maintain the longitudinal record from reviewed summaries;
 - `maintain-framework-readme` - verify this README against implemented behavior;
 - `clean-workspace-artifacts` - preview and remove allowlisted disposable artifacts;
@@ -263,6 +263,15 @@ Review this README against the implementation:
 python3 skills/maintain-framework-readme/scripts/readme_inventory.py --root .
 ```
 
+Validate, compile, and render a Berkeley-profile weekly deck:
+
+```bash
+python3 skills/build-weekly-beamer/scripts/validate_beamer.py \
+  slides/YYYYMMDD_example/weekly-update.tex \
+  --brand-profile berkeley --compile --engine lualatex \
+  --render-dir slides/YYYYMMDD_example/rendered
+```
+
 Cleanup is dry-run-first. Apply exactly the selection that was previewed:
 
 ```bash
@@ -280,8 +289,9 @@ python3 skills/clean-workspace-artifacts/scripts/clean_workspace.py \
   --root . --include-build-output --apply
 ```
 
-The cleaner protects transcripts, summaries, slide source, final PDFs, project
-history, documentation, reviews, source code, tests, and configuration.
+The cleaner protects transcripts, summaries, slide source, final PDFs, branding
+assets, project history, documentation, reviews, source code, tests, and
+configuration.
 
 ## Known limitations and possible improvements
 
