@@ -51,6 +51,7 @@ Private runtime artifacts are excluded from Git by default:
 transcripts/       raw meeting inputs
 summaries/         reviewed meeting records
 slides/            slide source, evidence, and rendered PDFs
+branding/          approved local institutional logo assets
 project-history/   longitudinal project records
 docs/              interaction and audit reports
 meetings/          legacy approved JSON/HTML records
@@ -133,19 +134,46 @@ separate HEP QA workflow when a discrepancy needs interpretation.
 
 ### Weekly slides
 
-Use `build-weekly-beamer` after two consecutive summaries are reviewed. Meeting N
-provides prior requests and action items; meeting N+1 provides evidence of what
-changed. The skill writes:
+The usual workflow starts `build-weekly-beamer` after meeting N is reviewed.
+Meeting N supplies prior requests, open questions, pending confirmations, and
+action items. The skill creates a structured deck for N+1 with specific evidence
+placeholders for plots, tables, metrics, external PDFs, or user confirmation.
+It writes:
 
 ```text
 slides/YYYYMMDD_<series>/weekly-update.tex
 slides/YYYYMMDD_<series>/weekly-update.pdf
 ```
 
-The deck is a 6-10 frame progress story, not a one-page summary. It tracks prior
-actions with the exact states `done`, `in progress`, `blocked`, `not discussed`,
-or `needs confirmation`. Supplied plots, JSON, or contributor slides are selected
-for decision relevance, with at most two plots per frame.
+These files are one output pair. The framework does not treat a TeX-only deck as
+complete: every material edit must be recompiled, rendered, and visually checked
+before the `.tex` and current `.pdf` are shared together.
+
+The default Berkeley presentation profile uses TeX Gyre Heros, bold blue message
+titles, a half-blue/half-gold title rule, neutral content surfaces, and approved
+UC Berkeley and Berkeley Lab logos on the title page. Keep the approved local
+logo files at:
+
+```text
+branding/berkeley/uc-berkeley-logo.png
+branding/berkeley/berkeley-lab-logo.png
+```
+
+`branding/` is excluded from Git so the public framework does not redistribute
+institutional trademarks. The slide skill copies these assets into each private
+deck and asks the user when an approved file is unavailable.
+
+Each follow-up item receives a stable ID, owner, evidence requirement, success
+criterion, and preparation status. Results supplied before N+1 are labeled
+`pre-meeting evidence`; missing results remain `awaiting evidence`. Items not
+finished before N+1 stay visible in its to-do list and later carry into N+2 unless
+evidence marks them `done` or the user explicitly closes them.
+
+After the N+1 summary is reviewed, the same deck becomes the final N-to-N+1
+differential. `not discussed` is used only at this retrospective stage. The deck
+follows goal, current status, work tried, evidence and reasoning, work to try
+next, and conclusion. It has no fixed maximum length, uses at most two plots per
+evidence frame, and receives visual, contextual, and logical review before sharing.
 
 ### Project history
 

@@ -13,8 +13,23 @@ import tempfile
 from pathlib import Path
 
 
-REQUIRED_ROLES = {"goal", "motivation", "follow-up", "differential", "progress", "reasoning", "actions", "conclusion"}
+REQUIRED_ROLES = {
+    "goal", "motivation", "current-status", "follow-up", "differential",
+    "attempts", "evidence", "reasoning", "next", "conclusion",
+}
+CORE_ROLE_SEQUENCE = ("goal", "current-status", "attempts", "next", "conclusion")
 FRAME_RE = re.compile(r"\\begin\{frame\}(?:\[[^]]*\])?(?:\{([^}]*)\})?(.*?)\\end\{frame\}", re.S)
+BERKELEY_STYLE_MARKERS = {
+    "TeX Gyre Heros sans-serif font": r"\setsansfont{TeX Gyre Heros}",
+    "Berkeley blue": r"\definecolor{berkeleyblue}{HTML}{003262}",
+    "California gold": r"\definecolor{californiagold}{HTML}{FDB515}",
+    "bold deck title": r"\setbeamerfont{title}{series=\bfseries}",
+    "bold frame titles": r"\setbeamerfont{frametitle}{series=\bfseries}",
+    "blue half-rule": r"\color{berkeleyblue}\rule{0.5\textwidth}{0.8pt}",
+    "gold half-rule": r"\color{californiagold}\rule{0.5\textwidth}{0.8pt}",
+    "UC Berkeley title logo": "assets/uc-berkeley-logo.png",
+    "Berkeley Lab title logo": "assets/berkeley-lab-logo.png",
+}
 
 
 def expanded_source(path: Path, seen: set[Path] | None = None) -> str:
@@ -45,21 +60,27 @@ def run(command: list[str], cwd: Path, env: dict[str, str] | None = None) -> sub
     )
 
 
-def validate_source(path: Path) -> list[str]:
+def validate_source(path: Path, brand_profile: str = "none") -> list[str]:
     source = expanded_source(path)
     errors: list[str] = []
     roles = {match.lower() for match in re.findall(r"^\s*%\s*role:\s*([\w-]+)\s*$", source, re.M)}
     missing = sorted(REQUIRED_ROLES - roles)
     if missing:
         errors.append("missing narrative role markers: " + ", ".join(missing))
+    role_positions = {
+        role: source.find(f"role: {role}") for role in CORE_ROLE_SEQUENCE
+    }
+    present_positions = [role_positions[role] for role in CORE_ROLE_SEQUENCE if role_positions[role] >= 0]
+    if present_positions != sorted(present_positions):
+        errors.append(
+            "core narrative roles must appear in order: " + ", ".join(CORE_ROLE_SEQUENCE)
+        )
     if re.search(r"\\(?:tiny|scriptsize)\b", source):
         errors.append("tiny or scriptsize body text is not allowed")
 
     frames = FRAME_RE.findall(source)
     if not frames:
         errors.append("no Beamer frames found")
-    elif len(frames) < 6:
-        errors.append(f"weekly deck has {len(frames)} frames; minimum is 6")
     for index, (title, body) in enumerate(frames, 1):
         if not title and "\\titlepage" not in body:
             errors.append(f"frame {index} has no title")
@@ -69,6 +90,16 @@ def validate_source(path: Path) -> list[str]:
         item_count = len(re.findall(r"\\item\b", body))
         if item_count > 6:
             errors.append(f"frame {index} has {item_count} items; maximum is 6")
+    if brand_profile == "berkeley":
+        for label, marker in BERKELEY_STYLE_MARKERS.items():
+            if marker not in source:
+                errors.append(f"Berkeley profile is missing {label}")
+        for relative in (
+            "assets/uc-berkeley-logo.png",
+            "assets/berkeley-lab-logo.png",
+        ):
+            if not (path.parent / relative).is_file():
+                errors.append(f"Berkeley profile requires approved logo asset: {relative}")
     return errors
 
 
@@ -161,10 +192,11 @@ def main() -> int:
     parser.add_argument("tex", type=Path)
     parser.add_argument("--compile", action="store_true")
     parser.add_argument("--engine", choices=("lualatex", "xelatex", "pdflatex"), default="lualatex")
+    parser.add_argument("--brand-profile", choices=("none", "berkeley"), default="none")
     parser.add_argument("--render-dir", type=Path)
     args = parser.parse_args()
     path = args.tex.expanduser().resolve()
-    errors = validate_source(path)
+    errors = validate_source(path, args.brand_profile)
     if args.compile and not errors:
         errors.extend(compile_tex(path, args.engine))
     if args.render_dir and not errors:

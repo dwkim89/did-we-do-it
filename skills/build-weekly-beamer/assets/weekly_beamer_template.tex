@@ -6,37 +6,53 @@
 \setsansfont{TeX Gyre Heros}
 \usepackage{graphicx}
 \usepackage{booktabs}
+\usepackage{array}
 \usepackage{microtype}
+\usepackage{tikz}
 
-% Restrained palette: one muted navy accent plus neutral grays.
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+% Berkeley presentation profile: restrained blue/gold hierarchy plus neutrals.
 \definecolor{charcoal}{HTML}{1F2933}
 \definecolor{slate}{HTML}{52606D}
-\definecolor{navy}{HTML}{334E68}
+\definecolor{berkeleyblue}{HTML}{003262}
+\definecolor{californiagold}{HTML}{FDB515}
 \definecolor{rulegray}{HTML}{D9E2EC}
 \definecolor{panelgray}{HTML}{F3F5F7}
+\definecolor{goldtint}{HTML}{FFF6D6}
 
 \setbeamercolor{normal text}{fg=charcoal,bg=white}
-\setbeamercolor{frametitle}{fg=charcoal,bg=white}
-\setbeamercolor{structure}{fg=navy}
-\setbeamercolor{block title}{fg=charcoal,bg=rulegray}
+\setbeamercolor{title}{fg=berkeleyblue}
+\setbeamercolor{subtitle}{fg=slate}
+\setbeamercolor{frametitle}{fg=berkeleyblue,bg=white}
+\setbeamercolor{structure}{fg=berkeleyblue}
+\setbeamercolor{block title}{fg=berkeleyblue,bg=goldtint}
 \setbeamercolor{block body}{fg=charcoal,bg=panelgray}
 \setbeamercolor{footline}{fg=slate,bg=white}
+\setbeamerfont{title}{series=\bfseries}
+\setbeamerfont{frametitle}{series=\bfseries}
 \setbeamertemplate{navigation symbols}{}
 \setbeamertemplate{frametitle}{%
   \vspace{0.25cm}\insertframetitle\par\vspace{0.12cm}%
-  {\color{rulegray}\rule{\textwidth}{0.5pt}}}
+  {\color{berkeleyblue}\rule{0.5\textwidth}{0.8pt}}%
+  {\color{californiagold}\rule{0.5\textwidth}{0.8pt}}}
 \setbeamertemplate{footline}{\hfill\color{slate}\insertframenumber\hspace{1em}\vspace{0.55em}}
-\setbeamertemplate{itemize item}{\color{navy}\small\raise0.15ex\hbox{\(\blacktriangleright\)}}
+\setbeamertemplate{itemize item}{\color{berkeleyblue}\small\raise0.15ex\hbox{\(\blacktriangleright\)}}
 \setbeamersize{text margin left=0.70cm,text margin right=0.70cm}
 
-\newcommand{\source}[1]{\par\vfill{\color{slate}\footnotesize Source: #1}\vspace{-0.18cm}}
+\newcommand{\source}[1]{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=south west,text=slate,font=\footnotesize,align=left,
+      text width=0.88\paperwidth]
+      at ([xshift=0.70cm,yshift=0.28cm]current page.south west) {Source: #1};
+  \end{tikzpicture}}
 \newcommand{\evidenceplaceholder}[1]{%
   \begin{beamercolorbox}[wd=\linewidth,sep=0.55cm,center,rounded=true]{block body}%
     {\color{slate}\textbf{Evidence placeholder}}\\[0.2em]#1
   \end{beamercolorbox}}
 
 \title{Weekly Project Update}
-\subtitle{Reporting period: YYYY-MM-DD}
+\subtitle{Preparation for meeting N+1: YYYY-MM-DD}
 \author{Team}
 \date{YYYY-MM-DD}
 
@@ -44,6 +60,21 @@
 
 \begin{frame}[plain]
   \titlepage
+  % Copy approved local assets from branding/berkeley/ into this deck's assets/.
+  \begin{tikzpicture}[remember picture,overlay]
+    \IfFileExists{assets/uc-berkeley-logo.png}{%
+      \node[anchor=south west,inner sep=0pt]
+        at ([xshift=0.75cm,yshift=0.48cm]current page.south west) {%
+          \includegraphics[width=0.28\paperwidth,trim=550bp 940bp 550bp 940bp,clip]
+            {assets/uc-berkeley-logo.png}};
+    }{}
+    \IfFileExists{assets/berkeley-lab-logo.png}{%
+      \node[anchor=south east,inner sep=0pt]
+        at ([xshift=-0.75cm,yshift=0.48cm]current page.south east) {%
+          \includegraphics[width=0.30\paperwidth]
+            {assets/berkeley-lab-logo.png}};
+    }{}
+  \end{tikzpicture}
 \end{frame}
 
 % role: goal
@@ -60,19 +91,22 @@
 
 % role: follow-up
 % role: differential
-\begin{frame}{Previous requests have explicit status}
+% role: current-status
+% mode: preparation
+\begin{frame}[t]{Previous requests have explicit status}
   \footnotesize
-  \begin{tabular}{@{}p{0.31\textwidth}p{0.13\textwidth}p{0.31\textwidth}p{0.15\textwidth}@{}}
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{@{}L{0.08\textwidth}L{0.27\textwidth}L{0.13\textwidth}L{0.30\textwidth}L{0.14\textwidth}@{}}
     \toprule
-    Meeting N request & Owner & Change observed at N+1 & Status \\
+    ID & Meeting N request & Owner & Evidence needed or received & Status \\
     \midrule
-    Replace with prior request & Unassigned & Replace with evidence or no discussion & not discussed \\
+    N-01 & Replace with prior request & Unassigned & Replace with required plot, table, PDF, or confirmation & awaiting evidence \\
     \bottomrule
   \end{tabular}
-  \source{Consecutive reviewed meeting summaries: N and N+1}
+  \source{Reviewed meeting N summary; results added later are pre-meeting evidence}
 \end{frame}
 
-% role: progress
+% role: current-status
 \begin{frame}{Progress is organized by workstream}
   \begin{columns}[T,onlytextwidth]
     \column{0.47\textwidth}
@@ -90,17 +124,20 @@
   \end{columns}
 \end{frame}
 
+% role: attempts
+% role: evidence
 % role: reasoning
-\begin{frame}{The needed evidence and reasoning are explicit}
+\begin{frame}[t]{The test and its outcome are explicit}
   \begin{columns}[T,onlytextwidth]
     \column{0.56\textwidth}
       \begin{itemize}
-        \item Claim to test or result to explain.
+        \item Hypothesis or question being tested.
+        \item Work already tried and its outcome.
         \item Comparison, metric, or uncertainty needed.
-        \item Interpretation to confirm with the team.
+        \item Evidence supports, challenges, or does not resolve the hypothesis.
       \end{itemize}
     \column{0.40\textwidth}
-      \evidenceplaceholder{Insert one plot or compact table here. Use two only for a direct comparison.}
+      \evidenceplaceholder{N-01: insert the named plot, table, metric, PDF, or confirmation. Use two plots only for a direct comparison.}
   \end{columns}
   \source{Reviewed meeting summary; replace with supplied artifact filename}
 \end{frame}
@@ -118,21 +155,21 @@
   \end{columns}
 \end{frame}
 
-% role: actions
-\begin{frame}{Next actions are owned and testable}
+% role: next
+\begin{frame}{Unfinished items remain visible for N+1}
   \begin{itemize}
-    \item Owner - concrete action - due date if confirmed.
-    \item Owner - concrete action - success criterion.
-    \item Needs confirmation - unresolved owner, scope, or date.
+    \item N-01 - owner - unfinished check - missing evidence.
+    \item Carry every item not marked done into this list.
+    \item Record explicitly closed or dropped items; do not hide them.
   \end{itemize}
 \end{frame}
 
 % role: conclusion
-\begin{frame}{The week closes with three takeaways}
+\begin{frame}{N+1 opens with explicit checks and decisions}
   \begin{enumerate}
-    \item Replace with the strongest supported conclusion.
-    \item Replace with the decision or remaining open question.
-    \item Replace with the next checkpoint.
+    \item Replace with the strongest supported pre-meeting conclusion.
+    \item Replace with the decision or question for N+1.
+    \item Replace with the next checkpoint and success criterion.
   \end{enumerate}
 \end{frame}
 
