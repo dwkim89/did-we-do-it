@@ -1,0 +1,4 @@
+interface:
+  display_name: "Publish Safe Repository Files"
+  short_description: "Track reusable files without exposing private data"
+  default_prompt: "Use $publish-safe-repository-files to review and stage only safe, reusable repository files."

@@ -14,7 +14,9 @@ didwedoit.toml
 # Private meeting inputs and generated project artifacts.
 transcripts/
 summaries/
-slides/
+slides/*
+!slides/assets/
+!slides/assets/**
 docs/
 project-history/
 branding/

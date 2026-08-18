@@ -30,7 +30,7 @@ each frame title instead of repeating the role name.
 - Use TeX Gyre Heros through LuaLaTeX. Use regular weight for body text and bold for the deck title and claim-based frame titles.
 - Use a white background. Do not add gradients, decorative backgrounds, saturated status colors, or a different color per contributor.
 - Keep both approved institutional logos on the title page only. Put UC Berkeley at lower left and Berkeley Lab at lower right, preserve aspect ratio and clear space, and balance their visible heights.
-- Source approved logo files from the local `branding/berkeley/` profile, copy them into each deck's `assets/` directory, and never recreate or alter them. Ask the user when either asset is unavailable.
+- Source approved logo files from the tracked `slides/assets/` directory, copy them into each deck's local `assets/` directory, and never recreate or alter them. Ask the user when either asset is unavailable.
 - Use color only to establish hierarchy or draw attention to one conclusion.
 - Keep alignment, margins, title placement, source notes, and page numbers consistent.
 
@@ -45,6 +45,7 @@ each frame title instead of repeating the role name.
   displayed result supports, challenges, or leaves it unresolved.
 - Prefer vector PDF for plots. Use high-resolution PNG only when vector output is unavailable.
 - Preserve plot axis labels, units, legends, aspect ratio, uncertainty, and source filename.
+- Make the visible evidence as large as the frame safely allows. If labels are hard to read while blank space remains, increase the imported width or height. Inspect the visible axes and data region because internal PDF margins can make a nominally wide image appear small; use `trim` and `clip` only when they remove empty margins without cutting labels, legends, uncertainty, or ratio panels.
 - Use JSON values exactly as supplied; create a compact table only when it clarifies the claim.
 
 When plots or tables are not yet available, retain a clearly labeled evidence placeholder. Do not fabricate an example result. The skeleton must still contain goal, motivation, previous actions, expected evidence, reasoning questions, next actions, and conclusion criteria.
@@ -54,6 +55,7 @@ When plots or tables are not yet available, retain a clearly labeled evidence pl
 - Write for university students who know the field basics but not the project history.
 - Prefer short, direct wording: “Forward efficiency is lower in data,” not “A degradation of the signal efficiency is observed in the forward region.”
 - Use familiar labels. Replace vague project terms such as “grid,” “framework,” or “closure” with the concrete object or result unless the term is defined.
+- Replace method nicknames with the action a collaborator must perform. Use “rerun after changing one input group” instead of “ablation,” and “first reproduce the stored scores” instead of “parity gate.” Use the `simplify-slide-language` skill for the final wording pass.
 - Remove filler, repeated setup, and unnecessary articles when the message remains natural.
 - Aim for one idea per sentence and about ten words per frame title.
 - Place the source note at the bottom of the content area, below the evidence. Keep it legible and concise; move detailed provenance to notes or a report.

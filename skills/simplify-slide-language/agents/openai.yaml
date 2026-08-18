@@ -1,0 +1,4 @@
+interface:
+  display_name: "Clear Slide Language"
+  short_description: "Make technical slides easy to follow"
+  default_prompt: "Use $simplify-slide-language to rewrite this slide deck in clear language without weakening its technical claims."

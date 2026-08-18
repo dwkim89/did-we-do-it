@@ -48,17 +48,22 @@ meetings, so transcript content is not used as the canonical date.
 Private runtime artifacts are excluded from Git by default:
 
 ```text
-transcripts/       raw meeting inputs
-summaries/         reviewed meeting records
-slides/            slide source, evidence, and rendered PDFs
-branding/          approved local institutional logo assets
-project-history/   longitudinal project records
-docs/              interaction and audit reports
-meetings/          legacy approved JSON/HTML records
-reviews/           legacy pending review bundles
-state/             runtime state
-didwedoit.toml      local provider configuration
+transcripts/          raw meeting inputs
+summaries/            reviewed meeting records
+slides/YYYYMMDD_*/    dated slide source, evidence, and rendered PDFs
+branding/             other local branding material
+project-history/      longitudinal project records
+docs/                 interaction and audit reports
+meetings/             legacy approved JSON/HTML records
+reviews/              legacy pending review bundles
+state/                runtime state
+didwedoit.toml         local provider configuration
 ```
+
+The exception is `slides/assets/`, which contains approved reusable logos and is
+tracked. The public repository therefore contains framework code, tests, skills,
+documentation, and shared presentation assets, but no meeting records or dated
+project decks.
 
 Git exclusions do not change provider privacy. CBORG sends transcript content to
 the configured remote endpoint. Ollama is restricted to `localhost`,
@@ -96,6 +101,8 @@ didwedoit doctor
 
 `OPENAI_BASE_URL` may be used instead of `CBORG_BASE_URL`. The implementation
 requires HTTPS and suppresses provider response bodies from HTTP errors.
+CBORG access and an endpoint are not provided by this repository. Users without
+access should configure local Ollama or select the heuristic development fallback.
 
 ## Primary workflow
 
@@ -151,17 +158,17 @@ before the `.tex` and current `.pdf` are shared together.
 
 The default Berkeley presentation profile uses TeX Gyre Heros, bold blue message
 titles, a half-blue/half-gold title rule, neutral content surfaces, and approved
-UC Berkeley and Berkeley Lab logos on the title page. Keep the approved local
-logo files at:
+UC Berkeley and Berkeley Lab logos on the title page. Reusable approved logos
+are tracked at:
 
 ```text
-branding/berkeley/uc-berkeley-logo.png
-branding/berkeley/berkeley-lab-logo.png
+slides/assets/uc-berkeley-logo.png
+slides/assets/berkeley-lab-logo.png
 ```
 
-`branding/` is excluded from Git so the public framework does not redistribute
-institutional trademarks. The slide skill copies these assets into each private
-deck and asks the user when an approved file is unavailable.
+The slide skill copies these shared assets into each private deck. Dated deck
+source, rendered output, and meeting-specific material remain excluded from Git.
+Follow the applicable institutional brand guidance when reusing the logo files.
 
 Each follow-up item receives a stable ID, owner, evidence requirement, success
 criterion, and preparation status. Results supplied before N+1 are labeled
@@ -229,8 +236,10 @@ Repository copies under `skills/` are canonical and reviewable:
 - `summarize-meeting-markdown` - convert one dated Zoom transcript into reviewed Markdown;
 - `build-hep-validation-plots` - produce checked HEP plots with uncertainties and JSON sidecars;
 - `build-weekly-beamer` - prepare or update a Berkeley-profile weekly Beamer deck and verify its PDF;
+- `simplify-slide-language` - make technical slide wording clear without weakening its claims;
 - `maintain-project-history` - maintain the longitudinal record from reviewed summaries;
 - `maintain-framework-readme` - verify this README against implemented behavior;
+- `publish-safe-repository-files` - stage reusable files without publishing private meeting material;
 - `clean-workspace-artifacts` - preview and remove allowlisted disposable artifacts;
 - `capture-hourly-progress` - record evidence from a long active work interval;
 - `consolidate-daily-progress` - consolidate one day of hourly reports;
@@ -289,9 +298,9 @@ python3 skills/clean-workspace-artifacts/scripts/clean_workspace.py \
   --root . --include-build-output --apply
 ```
 
-The cleaner protects transcripts, summaries, slide source, final PDFs, branding
-assets, project history, documentation, reviews, source code, tests, and
-configuration.
+The cleaner protects transcripts, summaries, slide source, final PDFs, shared
+and deck-local assets, project history, documentation, reviews, source code,
+tests, and configuration.
 
 ## Known limitations and possible improvements
 
@@ -310,6 +319,8 @@ configuration.
    keep scheduled execution separate from skill definitions.
 7. Add a migration command if existing canonical `meetings/` records need to
    become reviewed Markdown summaries.
+8. Select and add a repository license before inviting external reuse. No
+   `LICENSE` file is currently included.
 
 See `MEETING_INTELLIGENCE_PRODUCT_TECHNICAL_SPEC.md` for the longer-term product
 contract. Specification text is not evidence that a feature is implemented.
