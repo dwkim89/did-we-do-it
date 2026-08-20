@@ -71,10 +71,10 @@ class CborgProvider:
     name = "cborg-v1"
     requires_confirmation = True
 
-    def __init__(self, model: str = "cborg-deepthought", base_url: str | None = None,
+    def __init__(self, model: str = "gpt-5.6-luna-medium", base_url: str | None = None,
                  api_key_env: str = "CBORG_API_KEY", timeout: int = 300,
                  chunk_chars: int = 40_000):
-        self.model = model.strip() or "cborg-deepthought"
+        self.model = model.strip() or "gpt-5.6-luna-medium"
         self.base_url = (base_url or os.getenv("CBORG_BASE_URL") or os.getenv("OPENAI_BASE_URL") or "").rstrip("/")
         self.api_key_env = api_key_env
         self.timeout = timeout

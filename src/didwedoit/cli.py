@@ -97,7 +97,7 @@ def cmd_process(args) -> int:
         provider = HeuristicProvider()
     elif provider_name == "cborg":
         provider = CborgProvider(
-            model=args.model or settings.model or "cborg-deepthought",
+            model=args.model or settings.model or "gpt-5.6-luna-medium",
             base_url=settings.cborg_url,
             timeout=settings.cborg_timeout_seconds,
             chunk_chars=settings.chunk_chars,
@@ -164,7 +164,7 @@ def cmd_summarize(args) -> int:
     provider_name = args.provider or settings.provider
     if provider_name == "cborg":
         provider = CborgProvider(
-            model=args.model or settings.model or "cborg-deepthought",
+            model=args.model or settings.model or "gpt-5.6-luna-medium",
             base_url=settings.cborg_url,
             timeout=settings.cborg_timeout_seconds,
             chunk_chars=settings.chunk_chars,
@@ -208,7 +208,7 @@ def cmd_doctor(args) -> int:
         result = {"ok": True, "provider": "heuristic", "network": "unused"}
     elif provider_name == "cborg":
         provider = CborgProvider(
-            model=args.model or settings.model or "cborg-deepthought",
+            model=args.model or settings.model or "gpt-5.6-luna-medium",
             base_url=settings.cborg_url,
             timeout=min(settings.cborg_timeout_seconds, 20),
             chunk_chars=settings.chunk_chars,

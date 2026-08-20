@@ -25,8 +25,8 @@ BERKELEY_STYLE_MARKERS = {
     "California gold": r"\definecolor{californiagold}{HTML}{FDB515}",
     "bold deck title": r"\setbeamerfont{title}{series=\bfseries}",
     "bold frame titles": r"\setbeamerfont{frametitle}{series=\bfseries}",
-    "blue half-rule": r"\color{berkeleyblue}\rule{0.5\textwidth}{0.8pt}",
-    "gold half-rule": r"\color{californiagold}\rule{0.5\textwidth}{0.8pt}",
+    "blue half-rule": r"\draw[berkeleyblue,line width=0.8pt] (0.001\textwidth,0) -- (0.5\textwidth,0);",
+    "gold half-rule": r"\draw[californiagold,line width=0.8pt] (0.5\textwidth,0) -- (0.999\textwidth,0);",
     "UC Berkeley title logo": "assets/uc-berkeley-logo.png",
     "Berkeley Lab title logo": "assets/berkeley-lab-logo.png",
 }

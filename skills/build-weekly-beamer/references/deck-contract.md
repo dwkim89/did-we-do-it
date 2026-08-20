@@ -14,6 +14,7 @@ Mark every deck role in the `.tex` source with `% role: NAME`:
 8. `reasoning` - what the evidence implies and why
 9. `next` - owner, concrete work to try, and confirmed due date or success criterion
 10. `conclusion` - key takeaways and decisions needed
+11. `backup` - supporting evidence retained for questions, cross-checks, or provenance
 
 Roles may share a frame, but the first occurrence of the core roles must follow
 `goal`, `current-status`, `attempts`, `next`, `conclusion`. State the takeaway in
@@ -39,8 +40,14 @@ each frame title instead of repeating the role name.
 - Maximum two plots per frame; one is preferred.
 - Maximum six `\item` entries per frame.
 - No `\tiny` or `\scriptsize` body text.
-- Use no fixed maximum frame count. Add a frame for a distinct, necessary point;
-  never add filler or compress evidence merely to meet a target length.
+- Aim for about 15 main frames, including title and conclusion. A useful default
+  outline is: title; goal/motivation; last week in review; current status; eight
+  or fewer workstream/evidence frames; unfinished work; next decisions; conclusion.
+  This is a planning target, not a quota or maximum.
+- Put supporting plots, alternate regions or selections, complete tables,
+  robustness checks, and detailed provenance after `\appendix`. Backup frames do
+  not count toward the main-deck target, but they receive the same visual and
+  factual review.
 - Each evidence frame must state one hypothesis or question and say whether the
   displayed result supports, challenges, or leaves it unresolved.
 - Prefer vector PDF for plots. Use high-resolution PNG only when vector output is unavailable.
@@ -70,6 +77,25 @@ In preparation mode use `awaiting evidence`, `in progress`, `blocked`, `needs co
 
 Every item not marked `done` must appear in the next to-do list unless the user explicitly closes or drops it. Record that disposition; never let an item disappear because a later meeting or artifact is silent.
 
+Start the main deck with one compact “last week in review” frame. On each later
+workstream, evidence, and action frame, repeat only a short context line:
+`ID | prior request | current status`. This makes the prior discussion visible
+to collaborators without copying the full summary onto every slide.
+
+## Requested artifact revisions
+
+- Treat a request such as adding a selection, uncertainty, region, column, or
+  more complete table entry as a revision attached to the original follow-up ID.
+- Record the prior artifact, the exact requested change, and the replacement
+  artifact. Never silently overwrite the prior version.
+- Route plot production from histogram or binned data to
+  `build-hep-validation-plots`; `build-weekly-beamer` owns placement and narrative.
+- Put the revised result in the main deck when it changes a decision or project
+  status. Put alternate selections and completeness checks in backup unless they
+  are themselves the main hypothesis.
+- If the inputs do not support the requested revision, show a precise evidence
+  placeholder and keep the item unresolved.
+
 ## Meeting-to-meeting differential
 
 - Meeting N defines the prior action, question, decision, or requested check.
@@ -80,7 +106,7 @@ Every item not marked `done` must appear in the next to-do list unless the user 
 - Contributor artifacts support claims but do not override reviewed summaries. Evidence created after N+1 must be labeled `later resolution`.
 - The final action frame contains work requested at N+1 for checking at N+2; do not mix it with the N-to-N+1 status table.
 - Produce a complete multi-frame argument. Length follows the number of necessary
-  claims, comparisons, and actions rather than a preset upper limit.
+  claims, comparisons, and actions; about 15 main frames is the normal target.
 
 ## Matched visual differential
 

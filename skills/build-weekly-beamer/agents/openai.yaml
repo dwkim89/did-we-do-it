@@ -1,4 +1,4 @@
 interface:
   display_name: "Weekly Beamer Builder"
-  short_description: "Prepare and review next-meeting Beamer decks"
-  default_prompt: "Use $build-weekly-beamer to turn a reviewed meeting summary into a Berkeley-branded next-meeting evidence skeleton, carry unresolved work forward, compile it, and quality-review the PDF."
+  short_description: "Build weekly status decks with clear differentials"
+  default_prompt: "Use $build-weekly-beamer to prepare a roughly 15-frame weekly status deck with last-week context, updated evidence, supporting backup, and a verified PDF."

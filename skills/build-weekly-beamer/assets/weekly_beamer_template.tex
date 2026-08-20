@@ -33,9 +33,12 @@
 \setbeamerfont{frametitle}{series=\bfseries}
 \setbeamertemplate{navigation symbols}{}
 \setbeamertemplate{frametitle}{%
-  \vspace{0.25cm}\insertframetitle\par\vspace{0.12cm}%
-  {\color{berkeleyblue}\rule{0.5\textwidth}{0.8pt}}%
-  {\color{californiagold}\rule{0.5\textwidth}{0.8pt}}}
+  \vspace{0.25cm}\insertframetitle\\[0.12cm]%
+  \begin{tikzpicture}
+    \draw[berkeleyblue,line width=0.8pt] (0.001\textwidth,0) -- (0.5\textwidth,0);
+    \draw[californiagold,line width=0.8pt] (0.5\textwidth,0) -- (0.999\textwidth,0);
+  \end{tikzpicture}%
+  \par\vspace{0.18cm}}
 \setbeamertemplate{footline}{\hfill\color{slate}\insertframenumber\hspace{1em}\vspace{0.55em}}
 \setbeamertemplate{itemize item}{\color{berkeleyblue}\small\raise0.15ex\hbox{\(\blacktriangleright\)}}
 \setbeamersize{text margin left=0.70cm,text margin right=0.70cm}
@@ -50,6 +53,8 @@
   \begin{beamercolorbox}[wd=\linewidth,sep=0.55cm,center,rounded=true]{block body}%
     {\color{slate}\textbf{Evidence placeholder}}\\[0.2em]#1
   \end{beamercolorbox}}
+\newcommand{\followupcontext}[3]{%
+  {\footnotesize\color{slate}\textbf{#1} \enspace #2 \hfill \textbf{Status:} #3}\par\vspace{0.25em}}
 
 \title{Weekly Project Update}
 \subtitle{Preparation for meeting N+1: YYYY-MM-DD}
@@ -128,6 +133,7 @@
 % role: evidence
 % role: reasoning
 \begin{frame}[t]{The test and its outcome are explicit}
+  \followupcontext{N-01}{Prior request in one short phrase}{awaiting evidence}
   \begin{columns}[T,onlytextwidth]
     \column{0.56\textwidth}
       \begin{itemize}
@@ -157,6 +163,7 @@
 
 % role: next
 \begin{frame}{Unfinished items remain visible for N+1}
+  \followupcontext{N-01}{Prior request in one short phrase}{awaiting evidence}
   \begin{itemize}
     \item N-01 - owner - unfinished check - missing evidence.
     \item Carry every item not marked done into this list.
@@ -171,6 +178,20 @@
     \item Replace with the decision or question for N+1.
     \item Replace with the next checkpoint and success criterion.
   \end{enumerate}
+\end{frame}
+
+% Aim for about 15 main frames including title and conclusion. Duplicate the
+% evidence pattern only for real hypotheses; do not add filler to reach 15.
+\appendix
+
+% role: backup
+\begin{frame}{Backup: supporting evidence and provenance}
+  \followupcontext{N-01}{Prior request in one short phrase}{awaiting evidence}
+  \begin{itemize}
+    \item Place alternate selections, regions, complete tables, or robustness checks here.
+    \item Keep the same labels, provenance, and review standard as the main deck.
+  \end{itemize}
+  \source{Replace with supporting artifact filename and date}
 \end{frame}
 
 \end{document}

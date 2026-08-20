@@ -16,7 +16,7 @@ Bob: I will check the input coordinates tomorrow because the data may be shifted
 class ReplayCborg(CborgProvider):
     def _request(self, method: str, path: str, body: dict | None = None) -> dict:
         if path == "/models":
-            return {"data": [{"id": "cborg-deepthought"}]}
+            return {"data": [{"id": "gpt-5.6-luna-medium"}]}
         name = body["response_format"]["json_schema"]["name"]
         if name == "meeting_synthesis":
             content = {"executive_summary": "The team investigated a forward validation failure and assigned a coordinate check.",
@@ -62,7 +62,7 @@ def test_cborg_structured_extraction_and_diagnosis(tmp_path: Path):
     provider = ReplayCborg(base_url="https://cborg.example/v1")
     assert provider.health()["model_ready"] is True
     record = provider.analyze(load_transcript(path), "detector")
-    assert record.extractor == "cborg-v1:cborg-deepthought"
+    assert record.extractor == "cborg-v1:gpt-5.6-luna-medium"
     assert record.actions[0].owner == "Bob"
     assert record.diagnoses[0].category == "root_cause"
     assert record.diagnoses[0].needs_review is True

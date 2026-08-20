@@ -34,7 +34,7 @@ def initialize_workspace(workspace: Path) -> dict[str, Path]:
     if not config.exists():
         config.write_text(
             "config_version = 1\n\n[analysis]\nprovider = \"cborg\"\n"
-            "model = \"cborg-deepthought\"\nchunk_chars = 40000\ncontext_tokens = 16384\n\n"
+            "model = \"gpt-5.6-luna-medium\"\nchunk_chars = 40000\ncontext_tokens = 16384\n\n"
             "[cborg]\ntimeout_seconds = 300\n\n"
             "[ollama]\nurl = \"http://127.0.0.1:11434\"\ntimeout_seconds = 300\n\n"
             "[privacy]\nretain_transcript_copy = false\n",
