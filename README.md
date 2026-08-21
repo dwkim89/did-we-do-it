@@ -170,9 +170,10 @@ complete: every material edit must be recompiled, rendered, and visually checked
 before the `.tex` and current `.pdf` are shared together.
 
 The default Berkeley presentation profile uses TeX Gyre Heros, bold blue message
-titles, a half-blue/half-gold title rule, neutral content surfaces, and approved
-UC Berkeley and Berkeley Lab logos on the title page. Reusable approved logos
-are tracked at:
+titles, a close half-blue/half-gold title rule, top-aligned content, separated
+takeaway paragraphs, neutral content surfaces, and a dedicated supporting-
+material divider. Approved UC Berkeley and Berkeley Lab logos appear on the
+title page. Reusable approved logos are tracked at:
 
 ```text
 slides/assets/uc-berkeley-logo.png
@@ -191,9 +192,9 @@ evidence marks them `done` or the user explicitly closes them.
 
 The main deck normally aims for about 15 frames, including the title and
 conclusion, without treating that number as a quota. An early “last week in
-review” frame summarizes material requests and status. Each related evidence or
-action frame repeats only its stable ID, compact prior request, and current
-status. Decision-relevant results stay in the main narrative; alternate
+review” frame summarizes material requests and status. It is the authoritative
+item-and-status list; later slides do not repeat a separate item/request/status
+strip beneath their titles. Decision-relevant results stay in the main narrative; alternate
 selections, supporting plots, full tables, and detailed provenance go after
 `\appendix` as backup.
 
@@ -264,7 +265,9 @@ Repository copies under `skills/` are canonical and reviewable:
 - `summarize-meeting-markdown` - normalize an existing meeting summary, or convert a dated Zoom transcript, into reviewed Markdown;
 - `build-hep-validation-plots` - produce checked HEP plots with uncertainties and JSON sidecars;
 - `build-weekly-beamer` - prepare or update a Berkeley-profile weekly Beamer deck and verify its PDF;
+- `apply-berkeley-beamer-layout` - apply the approved title-rule, content-spacing, takeaway, and supporting-material layout;
 - `simplify-slide-language` - make technical slide wording clear without weakening its claims;
+- `review-slide-message-clarity` - check the rendered deck's overall argument, evidence logic, and transitions before handoff;
 - `maintain-project-history` - maintain the longitudinal record from reviewed summaries;
 - `maintain-framework-readme` - verify this README against implemented behavior;
 - `publish-safe-repository-files` - stage reusable files without publishing private meeting material;

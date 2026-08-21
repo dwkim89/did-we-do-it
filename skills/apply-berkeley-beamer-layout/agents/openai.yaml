@@ -1,0 +1,4 @@
+interface:
+  display_name: "Apply Berkeley Beamer Layout"
+  short_description: "Apply the approved weekly-slide visual layout"
+  default_prompt: "Apply the approved Berkeley Beamer layout to this slide deck and verify the rendered PDF."

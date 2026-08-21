@@ -28,6 +28,7 @@ each frame title instead of repeating the role name.
   - charcoal `#1F2933`, slate `#52606D`, white, and light gray for body text and surfaces;
   - pale gold `#FFF6D6` only for restrained block-title accents.
 - Draw the rule under every frame title as two equal halves: Berkeley blue on the left and California gold on the right.
+- Keep the split title rule visually close to the title and minimize unused vertical padding above and below it so the evidence receives most of the frame.
 - Use TeX Gyre Heros through LuaLaTeX. Use regular weight for body text and bold for the deck title and claim-based frame titles.
 - Use a white background. Do not add gradients, decorative backgrounds, saturated status colors, or a different color per contributor.
 - Keep both approved institutional logos on the title page only. Put UC Berkeley at lower left and Berkeley Lab at lower right, preserve aspect ratio and clear space, and balance their visible heights.
@@ -71,21 +72,40 @@ When plots or tables are not yet available, retain a clearly labeled evidence pl
 
 Organize primarily by workstream, deliverable, or decision. Within a workstream, label the contributor and their evidence. Do not concatenate contributor decks. Use the repeated pattern: outcome, evidence, blocker, next action.
 
+### Presenter-to-team handoff
+
+When the main section is a focused update from one presenter and other
+contributors may share their own current results, finish the presenter's section
+with one handoff frame. It should:
+
+- summarize the presenter's supported findings and remaining evidence limit;
+- identify possible links to named collaborators' work;
+- distinguish a confirmed dependency from a possible connection;
+- avoid assuming that another contributor has or has not produced a result.
+
+Do not add a speculative sequence of slides describing another contributor's
+plan. Their evidence belongs in their own section when it is available. The
+handoff frame should let the next speaker connect their result to the completed
+presentation without repeating the opening follow-up table.
+
 ## Previous-action tracking
 
-In preparation mode use `awaiting evidence`, `in progress`, `blocked`, `needs confirmation`, or `done`. In retrospective differential mode, `not discussed` is also valid. Absence of discussion is never proof of completion. Preserve a faithful compact version of the prior request, stable ID, and owner when known.
+In preparation mode use `awaiting evidence`, `in progress`, `blocked`, `needs confirmation`, or `done`. In retrospective differential mode, `not discussed` is also valid. Absence of discussion is never proof of completion. Preserve a faithful compact version of the prior request, stable plain item number, and responsible person when known.
+
+Immediately after the title, include one whole-team frame titled `Follow-up items`. Use the columns `Item`, `Responsible`, `Follow-up`, and `Status`. Include all people with assigned work before giving detailed space to the presenter. Use simple labels such as `Item 1`; do not display opaque meeting/person codes unless the user explicitly requests them. A completed item may stay in this overview without receiving its own detailed frame.
 
 Every item not marked `done` must appear in the next to-do list unless the user explicitly closes or drops it. Record that disposition; never let an item disappear because a later meeting or artifact is silent.
 
-Start the main deck with one compact “last week in review” frame. On each later
-workstream, evidence, and action frame, repeat only a short context line:
-`ID | prior request | current status`. This makes the prior discussion visible
-to collaborators without copying the full summary onto every slide.
+Start the main deck with the compact whole-team follow-up frame. Treat it as the
+authoritative item-and-status summary. Do not repeat an item/request/status strip
+beneath later slide titles. Keep an item number in a title only when it helps
+navigation, and put any context required to interpret the evidence directly in
+the slide body.
 
 ## Requested artifact revisions
 
 - Treat a request such as adding a selection, uncertainty, region, column, or
-  more complete table entry as a revision attached to the original follow-up ID.
+  more complete table entry as a revision attached to the original item number.
 - Record the prior artifact, the exact requested change, and the replacement
   artifact. Never silently overwrite the prior version.
 - Route plot production from histogram or binned data to

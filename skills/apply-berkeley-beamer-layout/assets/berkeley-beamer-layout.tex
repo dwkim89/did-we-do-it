@@ -1,0 +1,87 @@
+% Minimal visual reference for the approved Berkeley weekly Beamer layout.
+% Compile with: latexmk -lualatex berkeley-beamer-layout.tex
+\documentclass[aspectratio=169,10pt,t]{beamer}
+\usetheme{default}
+\usefonttheme{professionalfonts}
+\usepackage{fontspec}
+\setsansfont{TeX Gyre Heros}
+\usepackage{graphicx,booktabs,microtype,amsmath,tikz,array}
+
+\definecolor{charcoal}{HTML}{1F2933}
+\definecolor{slate}{HTML}{52606D}
+\definecolor{berkeleyblue}{HTML}{003262}
+\definecolor{californiagold}{HTML}{FDB515}
+\definecolor{panelgray}{HTML}{F3F5F7}
+\definecolor{goldtint}{HTML}{FFF6D6}
+\setbeamercolor{normal text}{fg=charcoal,bg=white}
+\setbeamercolor{title}{fg=berkeleyblue}
+\setbeamercolor{subtitle}{fg=slate}
+\setbeamercolor{frametitle}{fg=berkeleyblue,bg=white}
+\setbeamercolor{structure}{fg=berkeleyblue}
+\setbeamercolor{block title}{fg=berkeleyblue,bg=goldtint}
+\setbeamercolor{block body}{fg=charcoal,bg=panelgray}
+\setbeamercolor{footline}{fg=slate,bg=white}
+\setbeamerfont{title}{series=\bfseries}
+\setbeamerfont{frametitle}{series=\bfseries}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{frametitle}{%
+  \vspace{0.12cm}\insertframetitle\\[-0.04cm]%
+  \begin{tikzpicture}
+    \draw[berkeleyblue,line width=0.8pt] (0.001\textwidth,0) -- (0.5\textwidth,0);
+    \draw[californiagold,line width=0.8pt] (0.5\textwidth,0) -- (0.999\textwidth,0);
+  \end{tikzpicture}%
+  \par\vspace{0.02cm}}
+\setbeamertemplate{footline}{\hfill\color{slate}\insertframenumber\hspace{1em}\vspace{0.55em}}
+\setbeamertemplate{itemize item}{\color{berkeleyblue}\small\raise0.15ex\hbox{\(\blacktriangleright\)}}
+\setbeamersize{text margin left=0.70cm,text margin right=0.70cm}
+\newcommand{\source}[1]{\par\vfill{\color{slate}\footnotesize Source: #1}\vspace{-0.18cm}}
+
+\title{Weekly Project Update}
+\subtitle{Approved visual-layout reference}
+\author{Team}
+\date{YYYY-MM-DD}
+
+\begin{document}
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+\begin{frame}{Evidence starts near the title rule}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+      \begin{block}{Evidence}
+        Put the first content close to the title rule.
+      \end{block}
+    \column{0.48\textwidth}
+      \begin{itemize}
+        \item Keep columns top-aligned.
+        \item Preserve readable whitespace.
+      \end{itemize}
+  \end{columns}
+  \vspace{0.18cm}
+
+  \textbf{Why this matters:} the conclusion is visually separate from the evidence above.
+  \source{Replace with the actual artifact and selection}
+\end{frame}
+
+\appendix
+{
+\setbeamertemplate{frametitle}{}
+\begin{frame}[plain]{Supporting material}
+  \centering
+  \vfill
+  \begin{tikzpicture}
+    \draw[berkeleyblue,line width=1.6pt] (0,0) -- (3.2,0);
+    \draw[californiagold,line width=1.6pt] (3.2,0) -- (6.4,0);
+  \end{tikzpicture}\par
+  \vspace{0.40cm}
+  {\color{berkeleyblue}\bfseries\fontsize{30}{36}\selectfont Supporting material}\par
+  \vspace{0.40cm}
+  \begin{tikzpicture}
+    \draw[berkeleyblue,line width=1.6pt] (0,0) -- (3.2,0);
+    \draw[californiagold,line width=1.6pt] (3.2,0) -- (6.4,0);
+  \end{tikzpicture}
+  \vfill
+\end{frame}
+}
+\end{document}

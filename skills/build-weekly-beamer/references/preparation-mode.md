@@ -12,7 +12,7 @@ Extract material items from these summary sections:
 - Action items;
 - Key outcomes only when they contain a concrete requested check or unresolved consequence.
 
-Assign a stable ID such as `N-01`. Preserve that ID as evidence arrives and when the item appears in later decks. Record:
+Assign a stable, human-facing number such as `Item 1`. Preserve that number as evidence arrives and when the item appears in later decks. Do not display meeting codes or contributor initials in the item label unless the user asks for them. Record:
 
 - compact request or question;
 - owner, or `Unassigned`;
@@ -41,11 +41,12 @@ Do not use `not discussed` before N+1 has occurred. After the reviewed N+1 summa
 ## Skeleton construction
 
 1. State the N-to-N+1 goal and why it matters.
-2. Show the meeting N follow-up ledger.
-3. Summarize last week's material requests and current status on one early frame.
-4. Group related items by workstream or contributor. Repeat a compact
-   `ID | prior request | current status` line on each related frame.
-5. Create one evidence frame per distinct hypothesis or direct comparison. Label each placeholder with its stable ID and the exact artifact needed.
+2. Immediately after the title, show one whole-team frame titled `Follow-up items` with `Item`, `Responsible`, `Follow-up`, and `Status` columns.
+3. Include every assigned contributor in that overview before beginning the presenting contributor's detailed workstream.
+4. Group related detailed items by workstream or contributor. Do not repeat an
+   item/request/status strip on each frame; the opening overview is
+   authoritative. Keep an item number in a title only when it aids navigation.
+5. Create one evidence frame per distinct hypothesis or direct comparison. Label each placeholder with its stable item number and the exact artifact needed.
 6. Put decision-relevant evidence in a roughly 15-frame main narrative. Place
    supporting plots, alternate selections, full tables, and provenance after
    `\appendix`; never add filler to reach the target.
@@ -66,10 +67,10 @@ when the required data are available. Preserve the earlier artifact for the
 old-to-new differential. Use `build-hep-validation-plots` for regenerated HEP
 figures; update tables directly only from supplied, traceable values.
 
-At N+1, unresolved items remain in the to-do frame. After its summary is reviewed, reconcile every stable ID:
+At N+1, unresolved items remain in the to-do frame. After its summary is reviewed, reconcile every stable item number:
 
 - record the meeting-time status and evidence;
 - use `not discussed` where appropriate;
 - carry unresolved items into N+2;
-- add new N+1 actions with new stable IDs;
+- add new N+1 actions with new item numbers;
 - record explicitly closed or dropped items so they do not silently disappear.
